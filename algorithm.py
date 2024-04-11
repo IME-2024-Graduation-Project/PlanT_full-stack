@@ -173,7 +173,7 @@ def clust(d,num1):
 
 
             return c
-    kk =  k_means_clust(d,data3) 
+    kmc =  k_means_clust(d,data3) 
 
     def cluster_list(kk):
         l = {}
