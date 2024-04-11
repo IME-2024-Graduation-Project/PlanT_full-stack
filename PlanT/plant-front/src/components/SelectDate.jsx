@@ -47,7 +47,7 @@ function DateRangePicker() {
       {submitted && startDate && endDate && (
         <p>여행 시작일: {startDate}, 여행 종료일: {endDate}</p>
       )}
-      <Link to="/home">다음</Link>
+      <Link to="/">다음</Link>
     </div>
   );
 }
