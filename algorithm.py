@@ -175,7 +175,25 @@ def clust(d,num1):
             return c
     kk =  k_means_clust(d,data3) 
 
-    return kk
+    def cluster_list(kk):
+        l = {}
+
+        for i in range(d):
+            l[i+1] = []
+
+        for n in range(len(kk)):
+            for m in range(1,d+1):
+                if kk.iloc[n]['cluster'] ==m :
+                    l[m].append(int(kk.iloc[n]['place_id']))
+
+        return l
+
+
+    cl = cluster_list(kmc)
+
+    return cl
+    
+    
 
 clust(8,num2)
 
