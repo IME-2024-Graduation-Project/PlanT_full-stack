@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 function MyForm() {
@@ -55,6 +56,7 @@ function MyForm() {
       <button type="submit">Submit</button>
       {submitted && <p>Selected option: {selectedOption}</p>}
       {result && <p>Result: <br/>{result}<br/>{result2}</p>}
+      <Link to="/user">About</Link>
     </form>
   );
 }
