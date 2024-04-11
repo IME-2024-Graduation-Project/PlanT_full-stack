@@ -194,7 +194,6 @@ val2 = [
             ]
 
 #       iloc,이동수단 매트릭스,place,cycle,work,eco 0 = 최단 1 = 탄소 저배출
-
 def rout_all(num1,val1,p,c,w,eco):
     #변경
     df2 = pd.read_csv('data.csv')
@@ -377,16 +376,16 @@ def rout_all(num1,val1,p,c,w,eco):
         
 
         # 최대 할당가능 제약식
-        solver.Add(sum([ d_1_i[5*i]*val['x_i'][5*i] for i in place ])<= walk )
-        solver.Add(sum([ d_1_i[5*i+1]*val['x_i'][5*i+1] for i in place ])<= cyl)
+        solver.Add(sum([ d_1_i[5*i]*val4['x_i'][5*i] for i in place ])<= walk )
+        solver.Add(sum([ d_1_i[5*i+1]*val4['x_i'][5*i+1] for i in place ])<= cyl)
         
             
         
         #목적함수(합 최대화)
         if eco == 0 :
-            solver.Minimize(sum([d_1_i[5*i+4]*val4['x_i'][5*i+4] +d_1_i[5*i]*val4['x_i'][5*i] + d_1_i[5*i+1]*val4['x_i'][5*i+1] + d_1_i[5*i+3]*val4['x_i'][5*i+3] + d_1_i[5*i+2]*val4['x_i'][5*i+2]     for i in place]) )
+            solver.Minimize(sum([d_1_i[5*i+4]*val['x_i'][5*i+4] +d_1_i[5*i]*val['x_i'][5*i] + d_1_i[5*i+1]*val['x_i'][5*i+1] + d_1_i[5*i+3]*val['x_i'][5*i+3] + d_1_i[5*i+2]*val['x_i'][5*i+2]     for i in place]) )
         elif eco ==1 :
-            solver.Maximize(sum([d_1_i[5*i+1]*val['x_i'][5*i+1] + d_1_i[5*i]*val['x_i'][5*i]     for i in place]) )
+            solver.Maximize(sum([d_1_i[5*i+1]*val4['x_i'][5*i+1] + d_1_i[5*i]*val4['x_i'][5*i]     for i in place]) )
         #목적함수 (대중교통 최소화)
         #solver.Minimize(sum([d_1_i[5*i+3]*val['x_i'][5*i+3] + d_1_i[5*i+2]*val['x_i'][5*i+2]     for i in place]) )
         #목적함수 편차 최소화 
@@ -418,8 +417,8 @@ def rout_all(num1,val1,p,c,w,eco):
                     #print(f'{int(i//5)   ,  int(i%5)  } ==> {d_1_i[i].solution_value()}' ,"Value : ",val['x_i'][i] ,'    이동수단 :',vec[i%5])
                     result[str(int(i//5))].append(int(i//5))
                     result[str(int(i//5))].append(vec[i%5])
+                    result[str(int(i//5))].append(val4['x_i'][i])
                     result[str(int(i//5))].append(val['x_i'][i])
-                    result[str(int(i//5))].append(val['x_i'][i]*pol[i%5])
                     '''
                     if  int(i%5) ==0: 
                         result['도보'].append([i//5,val['x_i'][i]])
@@ -455,8 +454,8 @@ def rout_all(num1,val1,p,c,w,eco):
             }
 
 
-#iloc,이동수단 매트릭스,place,cycle,work,eco 0 = 최단 1 = 탄소 저배출
-rout_all(8,num2,val2,6,20,20,0)
+rout_all(num2,val2,6,20,20,1)
+
 
 '''
 graham_scan
