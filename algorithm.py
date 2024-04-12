@@ -233,8 +233,8 @@ def rout_all(num1,val1,p,c,w,eco):
         '''
         
         for j in num:
-                sample_x.append(m.iloc[j]['mapx'] /1000)
-                sample_y.append(m.iloc[j]['mapy'] /1000 )
+                sample_x.append(m.iloc[j]['mapx'] *10000)
+                sample_y.append(m.iloc[j]['mapy'] *10000 )
 
         #1자
         sample_dist = []
