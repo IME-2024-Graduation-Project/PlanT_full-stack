@@ -10,7 +10,7 @@ from sklearn.cluster import DBSCAN
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
-from functools import reduce
+
 
 # place id
 num2 = [0,24,35,48,150,220,120,640,221,525,555,93,110,130]
@@ -135,7 +135,6 @@ def cluster(cluster_count,plc_list):
 cluster(8,num2)
 
 
-import pandas as pd
 #place_id
 def data_x_y(num):
     m = pd.read_csv('seoul_result_db3.csv')
@@ -151,21 +150,27 @@ def data_x_y(num):
             'ID' : id
     }
 data11 = data_x_y(num2)
-d_1 = data11['샘플']
-d_2 = data11['ID']
+
 #일정내 장소 위치
 #p_pts = [(127, 37),(128, 37), (9, 7), (12, 9), (9,8) ,(21, 20), (13, 33), (7, 36) ]
 p_pts = [(127, 37)]
 ppp = {
     1: p_pts , 
-    2: d_1 , 
-    3: d_2
+    2: data11['샘플'] , 
+    3: data11['ID']
 }
 
 
 
 
-def GetPlace(input):
+
+from functools import reduce
+import numpy as np
+import pandas as pd
+
+#place_id
+
+def PossiblePlace(input):
     day_points = input[1]
     point = input[2]
     id  = input[3]
@@ -272,11 +277,7 @@ def GetPlace(input):
                     inside_id.append(id[j])
 
 
-            return {#'polygon':polygon,
-                    'inside':inside , 
-                    'in_side_ID' : inside_id
-                    #,'outside' : outside
-                    }
+            return inside_id
         
         for i in range(len(p)):
             poly_list.append(convex_hull_graham(p[i],point))
@@ -373,11 +374,7 @@ def GetPlace(input):
                     inside.append(point[j])
                     inside_id.append(id[j])
 
-            return {#'polygon':polygon,
-                    'inside':inside , 
-                    'in_side_ID' : inside_id
-                    #,'outside' : outside
-                    }
+            return inside_id
         
         for i in range(len(p)):
             poly_list.append(convex_hull_graham(p[i],point))
@@ -392,17 +389,180 @@ def GetPlace(input):
     return result
 
 
-GetPlace(ppp)
+PossiblePlace(ppp)
 
 
 
 
-def APIRoute(place_id , value ,cycle,work,eco):
+def GetPlace(input):
+    day_points = input[1]
+    point = input[2]
+    id  = input[3]
+
+    distance_list = []
+
+    for i in range(len(point)):
+        distance = abs((day_points[0][0] - point[i][0])  + (day_points[0][1] - point[i][1]))
+        distance_list.append(distance)
+        
+    min_index =distance_list.index(min(distance_list))
+
+    id_min =  id[min_index]
+
+    return id_min
+
+
+GetPlace(ppp)   
+
+
+
+
+import requests
+import json
+
+
+data = {
+    1 : (127,37),
+    2 : (127,38),
+    3 : 25,
+    4 : 10
+}
+
+def APIrout(input):
+    start = input[1]
+    end = input[2]
+    walk = input[3]
+    cycle = input[4]
+
+
+    def get_directions(api_key, origin, destination):
+        url = "https://apis-navi.kakaomobility.com/v1/directions"
+        
+        # 파라미터 추가
+        params = {
+            "origin": origin,
+            "destination": destination
+        }
+        
+        headers = {
+            "Authorization": f"KakaoAK {api_key}",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.get(url, headers=headers, params=params)
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return None
+        
+
+    def direcrion(S_x , S_y , G_x , G_y)  :
+        if __name__ == "__main__":
+            REST_API_KEY = "5a85042810b38e43494af1c4c94b675e"
+        
+            origin_input = S_x , S_y 
+            destination_input = G_x ,G_y
+        
+            result = get_directions(REST_API_KEY, origin_input, destination_input)
+            if result:
+                print(result['routes'][0]['summary']['duration']) #(json.dumps(result, indent=4))
+                print(result)
+            else:
+                print("API 호출에 실패했습니다.")
+
+
+    car  = direcrion(start[0] , start[1] , end[0] , end[1]) 
+
+
+    #대중교통 api
+    def Public(S_x , S_y , G_x , G_y):
+        SX = S_x
+        SY = S_y
+        EX = G_x 
+        EY =  G_y
+
+        api_key = 'FoOUn1mJ5m+a/wEHhRH7LQ'
+
+        url = f'https://api.odsay.com/v1/api/searchPubTransPathR?lang=0&SX={SX}&SY={SY}&EX={EX}&EY={EY}&apiKey={api_key}'
+        response = requests.get(url).text
+        response = json.loads(response)
+
+        return response
+
+
+    p = Public(start[0] , start[1] , end[0] , end[1])
+
+    vec = ['도보' ,'자전거' , '대중교통','자차']
+    po1 = [0,0,50,100]
+
+    #임의 설정
+
+    w = 20
+    cy = 15
+    pub = 10 
+    own_Car = 10
+
+    
+
+    v = vec[2]
+    ww = w
+    cc = cy
+
+    if walk <= w : 
+        v = vec[0]
+        ww = w-walk
+        p = po1[0]*walk
+    else:
+
+        if cycle <= cy:
+            v = vec[1]
+            cc = cy -cycle
+            p = po1[1]*walk
+        else:
+            pass 
+
+    return{
+        '교통수단' :v ,
+        '남은 도보' : ww,
+        '자전거' : cc,
+        '탄소배출량' : p
+    }
+
+
+
+APIrout(data)
+
+
+
+
+
+
+
+
+#place_id
+num3 = [0,3,1,5,7,9]
+
+#--> api 호출
+#       도 자 버 지 차
+val2 = [ 
+        13,7,12,10,9,
+        20,11,17,13,10,
+        15,8,10,13,10,
+        24,14,12,14,12,
+        21,12,15,20,12 ,
+        31,16,18,14,10
+            ]
+
+
+
+def TSPRoute(place_id , value ,cycle,work):
     p = len(place_id)
     c = cycle
     w = work
     val1= value
     num1 = place_id
+    eco = 1
 
     #변경
     df2 = pd.read_csv('seoul_result_db3.csv')
@@ -608,7 +768,7 @@ def APIRoute(place_id , value ,cycle,work,eco):
 
 
         for i in range(len(place)):
-           result[f'{i}'] = []
+           result[i] = []
 
 
 
@@ -618,9 +778,9 @@ def APIRoute(place_id , value ,cycle,work,eco):
                 if 0.01 <= d_1_i[i].solution_value() <=1 :
                     #print(f'{int(i//5)   ,  int(i%5)  } ==> {d_1_i[i].solution_value()}' ,"Value : ",val['x_i'][i] ,'    이동수단 :',vec[i%5])
                     #result[str(int(i//5))].append(int(i//5))
-                    result[str(int(i//v))].append(vec[i%v])
-                    result[str(int(i//v))].append(val4['x_i'][i])
-                    result[str(int(i//v))].append(val['x_i'][i])
+                    result[(int(i//v))].append(vec[i%v])
+                    result[(int(i//v))].append(val4['x_i'][i])
+                    result[(int(i//v))].append(val['x_i'][i])
                 
             
             #print(f'Objective value = {solver.Objective().Value()}' )
@@ -645,18 +805,4 @@ def APIRoute(place_id , value ,cycle,work,eco):
 
 #        iloc 대중교통
 
-#place_id
-num3 = [0,3,1,5,7,9]
-
-#--> api 호출
-#       도 자 버 지 차
-val2 = [ 
-        13,7,12,10,9,
-        20,11,17,13,10,
-        15,8,10,13,10,
-        24,14,12,14,12,
-        21,12,15,20,12 ,
-        31,16,18,14,10
-            ]
-
-APIRoute(num3,val2,30,30,0)
+TSPRoute(num3,val2,30,30)
