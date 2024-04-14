@@ -17,8 +17,13 @@ function DateRangePicker() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setSubmitted(true);
+    if (startDate && endDate) {
+      setSubmitted(true);
+    } else {
+      alert('여행 시작일과 종료일을 입력하세요.');
+    }
   };
+
 
   return (
     <div>
@@ -47,7 +52,7 @@ function DateRangePicker() {
       {submitted && startDate && endDate && (
         <p>여행 시작일: {startDate}, 여행 종료일: {endDate}</p>
       )}
-      <Link to="/">다음</Link>
+      <Link to="/city">다음</Link>
     </div>
   );
 }

@@ -1,7 +1,5 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-
-// const SelectedCitiesContext = createContext();
 
 function SelectCity() {
   const cities = [
@@ -15,14 +13,6 @@ function SelectCity() {
   const [query, setQuery] = useState("");
   const [searchedCities, setSearchedCities] = useState([]);
   const [selectedCities, setSelectedCities] = useState([]);
-
-  // const SelectedCitiesProvider = ({ children }) => {
-  //   return (
-  //     <SelectedCitiesContext.Provider value={{ selectedCities, setSelectedCities }}>
-  //       {children}
-  //     </SelectedCitiesContext.Provider>
-  //   );
-  // };
 
   const handleSearch = () => {
     const filteredselectedCity = cities.filter(({ city }) =>
@@ -70,10 +60,12 @@ function SelectCity() {
           ))}
         </ul>
       </div>
-      <Link to="/ecolevel">다음</Link>
-      {/* <SelectedCitiesProvider>
-        {children}
-      </SelectedCitiesProvider> */}
+      {selectedCities.length >= 2 ? (
+        // <Link to={`/movedate/${selectedCities.length}`}>다음</Link>
+        <Link to="/movedate">다음</Link>
+      ) : (
+        <Link to="/ecolevel">다음</Link>
+      )}
     </main>
   );
 }

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function Test() {
+function MoveDate() {
   const [moveDates, setMoveDates] = useState('');
   const [transportation, setTransportation] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -96,4 +96,4 @@ function Test() {
   );
 }
 
-export default Test;
+export default MoveDate;

@@ -7,6 +7,7 @@ import SelectCity from './components/SelectCity';
 import SelectPlace from './components/SelectPlace';
 import SelectEcoLevel from './components/SelectEcoLevel'
 import SelectDate from './components/SelectDate';
+import MoveDate from './components/MoveDate';
 
 function App() {
 
@@ -15,10 +16,11 @@ function App() {
       <Routes>
         <Route path="/test" element={<Test />} />
         <Route path="/" element={<Home />} />
+        <Route path="/date" element={<SelectDate />} />
         <Route path="/city" element={<SelectCity />} />
+        <Route path='/movedate' element={<MoveDate />} />
         <Route path='/ecolevel' element={<SelectEcoLevel />} />
         <Route path="/place" element={<SelectPlace />} />
-        <Route path="/date" element={<SelectDate />} />
       </Routes>
     </BrowserRouter>
   );
