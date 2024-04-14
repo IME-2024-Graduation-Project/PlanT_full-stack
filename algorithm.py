@@ -1,5 +1,8 @@
 import pandas as pd
+import math
+import os
 from ortools.linear_solver import pywraplp
+import numpy as np
 from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver import routing_enums_pb2
 from sklearn.preprocessing import StandardScaler
@@ -7,19 +10,12 @@ from sklearn.cluster import DBSCAN
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
-from functools import reduce
-import numpy as np
 
-'''
-클러스터링
-'''
-#iloc
-num2 = [0,24,35,48,150,220,120,640,221,525,555,93,110,130,1,3]
+num2 = [0,24,35,48,150,220,120,640,221,525,555,93,110,130]
 
-#         수,iloc
 def clust(d,num1):
     #변경
-    df2 = pd.read_csv('data.csv')
+    df2 = pd.read_csv('seoul_result_db3.csv')
 
     def data(m, n):
         
@@ -38,8 +34,8 @@ def clust(d,num1):
         '''
         
         for j in num:
-                sample_x.append(m.iloc[j]['mapx'] /1000)
-                sample_y.append(m.iloc[j]['mapy'] /1000 )
+                sample_x.append(m.iloc[j]['place_longitude'])
+                sample_y.append(m.iloc[j]['place_latitude'] )
 
         #1자
         sample_dist = []
@@ -74,7 +70,7 @@ def clust(d,num1):
     '''
     DB SCAN
     '''
-    data3 = df2[['mapx', 'mapy']].iloc[num1]
+    data3 = df2[['place_id','place_longitude', 'place_latitude']].iloc[num1]
     def db_scan(data):
         # 정규화 진행
         scaler = StandardScaler()
@@ -119,7 +115,7 @@ def clust(d,num1):
             df_scale['cluster'] = model.fit_predict(df_scale)
 
             for j in range(-1, df_scale['cluster'].max() + 1):
-                ax[i // 2, i % 2].scatter(df_scale.loc[df_scale['cluster'] == j, 'mapx'], df_scale.loc[df_scale['cluster'] == j, 'mapy'], 
+                ax[i // 2, i % 2].scatter(df_scale.loc[df_scale['cluster'] == j, 'place_longitude'], df_scale.loc[df_scale['cluster'] == j, 'place_latitude'], 
                                 label = 'cluster ' + str(j))
 
             ax[i // 2, i % 2].legend()
@@ -134,9 +130,11 @@ def clust(d,num1):
     K-means
     '''
     def k_means_clust(k,da):
+            
+        
 
             # 두 가지 feature를 대상
-            data = da[['mapx', 'mapy']]#.iloc[[0,24,35,48,150,220,120,640]]
+            data = da[['place_id','place_longitude', 'place_latitude']]#.iloc[[0,24,35,48,150,220,120,640]]
 
             #data = dat[0:15]
             
@@ -153,27 +151,29 @@ def clust(d,num1):
             model.fit(data_scale)
 
             # 클러스터링 결과 각 데이터가 몇 번째 그룹에 속하는지 저장
-            data['cluster'] = model.fit_predict(data_scale)
+            data['cluster'] = model.fit_predict(data_scale)+1
 
             da = da.reset_index(drop = True)
 
             plt.figure(figsize = (8, 8))
-
+            '''
             for i in range(k):
-                    plt.scatter(data.loc[data['cluster'] == i, 'mapx'], data.loc[data['cluster'] == i, 'mapy'], 
-                            label = 'cluster ' + str(i))
+                    plt.scatter(data.loc[data['cluster'] == i+1, 'place_longitude'], data.loc[data['cluster'] == i+1, 'place_latitude'], 
+                            label = 'cluster ' + str(i+1))
 
             plt.legend()
             plt.title('K = %d results'%k , size = 15)
             plt.xlabel('Annual Income', size = 12)
             plt.ylabel('Spending Score', size = 12)
             plt.show()
-
-            c = data[['mapx','mapy','cluster']]
+            '''
+            c = data[['place_id','place_longitude','place_latitude','cluster']]
 
 
             return c
+    
     kmc =  k_means_clust(d,data3) 
+
 
     def cluster_list(kk):
         l = {}
@@ -193,15 +193,13 @@ def clust(d,num1):
 
     return cl
     
-    
 
 clust(8,num2)
 
 
-'''
-루팅 알고리즘
-'''
-#      도 자 버 지 차 (이동수단)
+num2 = [0,3,1,5,7,9,224,35,48,150,220,120,640,221,525,555,93,110,130]
+
+#--> api 호출
 val2 = [ 
         13,7,12,10,9,
         20,11,17,13,10,
@@ -211,10 +209,9 @@ val2 = [
         31,16,18,14,10
             ]
 
-#       iloc,이동수단 매트릭스,place,cycle,work,eco 0 = 최단 1 = 탄소 저배출
 def rout_all(num1,val1,p,c,w,eco):
     #변경
-    df2 = pd.read_csv('data.csv')
+    df2 = pd.read_csv('seoul_result_db3.csv')
 
     def data(m, n):
         
@@ -233,8 +230,8 @@ def rout_all(num1,val1,p,c,w,eco):
         '''
         
         for j in num:
-                sample_x.append(m.iloc[j]['mapx'] *10000)
-                sample_y.append(m.iloc[j]['mapy'] *10000 )
+                sample_x.append(m.iloc[j]['place_longitude']*10000 )
+                sample_y.append(m.iloc[j]['place_latitude']*10000  )
 
         #1자
         sample_dist = []
@@ -265,11 +262,11 @@ def rout_all(num1,val1,p,c,w,eco):
         return {'li_in_li': sample_dist_2 ,
                 'one' : sample_dist
                 }
-    data1 = data(df2,num1)['li_in_li']
+    data1 = data(df2,num1)['li_in_li'][0:p]
     """
     TSP 
     """
-    def rout(s):
+    def rout(data1):
 
         node = []
 
@@ -286,7 +283,7 @@ def rout_all(num1,val1,p,c,w,eco):
         def print_solution(manager, routing, solution):
         
         
-            print(f"Objective: {solution.ObjectiveValue()/10000} ")
+            print(f"Objective: {solution.ObjectiveValue()} ")
             index = routing.Start(0)
             plan_output = "Route for vehicle 0:\n"
             route_distance = 0
@@ -307,7 +304,7 @@ def rout_all(num1,val1,p,c,w,eco):
 
 
         # 실행
-        data = create_data_model(s)
+        data = create_data_model(data1)
 
         # 루트 매니저
         manager = pywrapcp.RoutingIndexManager(
@@ -347,7 +344,7 @@ def rout_all(num1,val1,p,c,w,eco):
         
         return node
     # -> 데이터
-    d = rout(data(df2,num1)['li_in_li'][0:6])
+    d = rout(data1)
 
     """
     이동수단 선택 알고리즘
@@ -471,24 +468,35 @@ def rout_all(num1,val1,p,c,w,eco):
             a
             }
 
-
+#        iloc 대중교통 
 rout_all(num2,val2,6,20,20,1)
 
+num2 = [0,24,35,48,150,220,120,640,221,525,555,93,110,130,1,3]
 
-'''
-graham_scan
-'''
-# 폴리곤 포인트(위도 경도) 경로 순서대로 받음. 
+def data_x_y(num):
+    m = pd.read_csv('seoul_result_db3.csv')
+    sample = []
+    id = []
+    
+    
+    for j in num:
+                sample.append((m.iloc[j]['place_longitude'] , m.iloc[j]['place_latitude'] ))
+                id.append(m.iloc[j]['place_id'])
+
+    return { '샘플' :sample , 
+            'ID' : id
+    }
+data11 = data_x_y(num2)
+
+from functools import reduce
+import numpy as np
 p_pts = [(4, 20), (9, 7), (12, 9), (9,8) ,(21, 20), (13, 33), (7, 36) ]
-# 추천장소 위도,경도
-points = [(9,10),(99,99),(99,19) , (9,11),(1,5),(99,9)]
 
+points = [(9,10),(39,39),(9,39) , (9,11),(1,5),(33,12) ,(7,20),(20,10),(25,20),(15,30)]
 
+#points = [ (126,37),(99,35),(128.7384361,34.8799083)]
 
-
-#          데이터,포인트,범위
 def in_out(dat ,point,ran): 
-
     poly_list = []
     int1 = int(ran)
     
@@ -591,8 +599,10 @@ def in_out(dat ,point,ran):
 
     return poly_list
 
+in_out(p_pts,points,9)
 
 
+# 클러스터 한개일때 
 def num1_in_out(dat,point,ran):
 
     poly_list = []
@@ -686,3 +696,5 @@ def num1_in_out(dat,point,ran):
         poly_list.append(convex_hull_graham(p[i],point))
 
     return poly_list
+
+num1_in_out(p_pts,p_pts,12)  
