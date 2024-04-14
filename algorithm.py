@@ -504,8 +504,8 @@ def APIrout(input):
     own_Car = 10
 
     
-
     v = vec[2]
+    t = pub
     ww = w
     cc = cy
 
@@ -513,17 +513,20 @@ def APIrout(input):
         v = vec[0]
         ww = w-walk
         p = po1[0]*walk
+        t = w
     else:
 
         if cycle <= cy:
             v = vec[1]
             cc = cy -cycle
             p = po1[1]*walk
+            t = cy
         else:
             pass 
 
     return{
         '교통수단' :v ,
+        '소요시간' :  t ,
         '남은 도보' : ww,
         '자전거' : cc,
         '탄소배출량' : p
