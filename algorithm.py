@@ -494,7 +494,7 @@ def APIrout(input):
     p = Public(start[0] , start[1] , end[0] , end[1])
 
     vec = ['도보' ,'자전거' , '대중교통','자차']
-    po1 = [0,0,50,100]
+    pol = [0,0,50,100]
 
     #임의 설정
 
@@ -504,22 +504,24 @@ def APIrout(input):
     own_Car = 10
 
     
+
     v = vec[2]
     t = pub
     ww = w
     cc = cy
+    p = pub*pol[2]
 
-    if walk <= w : 
+    if walk >= w : 
         v = vec[0]
-        ww = w-walk
-        p = po1[0]*walk
+        ww = walk-w
+        p = pol[0]*w
         t = w
     else:
 
-        if cycle <= cy:
+        if cycle >= cy:
             v = vec[1]
-            cc = cy -cycle
-            p = po1[1]*walk
+            cc = cycle - cy
+            p = pol[1]*cycle
             t = cy
         else:
             pass 
@@ -530,7 +532,7 @@ def APIrout(input):
         '남은 도보' : ww,
         '자전거' : cc,
         '탄소배출량' : p
-    }
+        }
 
 
 
