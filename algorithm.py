@@ -10,6 +10,9 @@ from sklearn.cluster import DBSCAN
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
+import requests
+import json
+
 
 
 # place id
@@ -402,7 +405,7 @@ def GetPlace(input):
     distance_list = []
 
     for i in range(len(point)):
-        distance = abs((day_points[0][0] - point[i][0])  + (day_points[0][1] - point[i][1]))
+        distance = abs((day_points[0][0]*10000 - point[i][0]*10000)  + abs( day_points[0][1]*10000 - point[i][1]*10000))
         distance_list.append(distance)
         
     min_index =distance_list.index(min(distance_list))
@@ -414,11 +417,34 @@ def GetPlace(input):
 
 GetPlace(ppp)   
 
+def TwoGetPlace(input):
+    day_points = input[1]
+    point = input[2]
+    id  = input[3]
+
+    distance_list1 = []
+    distance_list2 = []
+    distance_list_All = []
+
+    for i in range(len(point)):
+        distance1 = abs((day_points[0][0]*10000 - point[i][0]*10000))  + abs((day_points[0][1]*10000 - point[i][1]*10000)) 
+        distance2 = abs((day_points[1][0]*10000 - point[i][0]*10000))  + abs((day_points[1][1]*10000 - point[i][1]*10000))
+        distance_list1.append(distance1)
+        distance_list2.append(distance2)
+        distance_list_All.append(distance1+distance2)
+        
+    min_index =distance_list_All.index(min(distance_list_All))
+
+    id_min =  id[min_index]
+
+    return distance_list_All
+
+
+TwoGetPlace(ppp)   
 
 
 
-import requests
-import json
+
 
 
 data = {
@@ -537,8 +563,6 @@ def APIrout(input):
 
 
 APIrout(data)
-
-
 
 
 
