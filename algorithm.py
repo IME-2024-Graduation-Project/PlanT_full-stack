@@ -437,7 +437,7 @@ def TwoGetPlace(input):
 
     id_min =  id[min_index]
 
-    return distance_list_All
+    return id_min
 
 
 TwoGetPlace(ppp)   
