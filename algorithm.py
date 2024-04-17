@@ -389,7 +389,7 @@ def PossiblePlace(input):
     elif len(day_points) != 1:
         result = in_out(day_points,point,id)
 
-    return result
+    return result[0]
 
 
 PossiblePlace(ppp)
