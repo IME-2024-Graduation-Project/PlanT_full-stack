@@ -385,11 +385,19 @@ def PossiblePlace(input):
         return poly_list
 
     if len(day_points) == 1:
-        result = num1_in_out(day_points,point,id)
+        result = num1_in_out(day_points,point,id)[0]
     elif len(day_points) != 1:
-        result = in_out(day_points,point,id)
+        result = in_out(day_points,point,id)[0]
 
-    return result[0]
+    while len(result) < 8 :
+        result1 = num1_in_out(day_points,point,id)
+        result = result + result1
+        result = set(tuple(result))
+        result = list(result)
+        if len(result1) == 0:
+            break
+
+    return result
 
 
 PossiblePlace(ppp)
