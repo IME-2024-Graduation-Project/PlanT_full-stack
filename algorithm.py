@@ -600,44 +600,19 @@ def APIrout(input):
 APIrout(data)
 
 
-
-
-
-
-#place_id
-num3 = [0,3,1,5,7,9]
-
-#--> api 호출
-#       도 자 버 지 차
-val2 = [ 
-        13,7,12,10,9,
-        20,11,17,13,10,
-        15,8,10,13,10,
-        24,14,12,14,12,
-        21,12,15,20,12 ,
-        31,16,18,14,10
-            ]
-
-
-
-def TSPRoute(place_id , value ,cycle,work):
-    p = len(place_id)
-    c = cycle
-    w = work
-    val1= value
-    num1 = place_id
-    eco = 1
+def TSPRoute(input):
+    p = len(input[3])
+    num1 = input[3]
 
     #변경
-    df2 = pd.read_csv('seoul_result_db3.csv')
 
-    def data(m, n):
+    def data(input):
         
 
         sample_x = []
         sample_y = []
 
-        num = n
+        num = input[3]
 
         '''
         for  i in l:
@@ -647,9 +622,9 @@ def TSPRoute(place_id , value ,cycle,work):
             sample_y.append(b)
         '''
         
-        for j in num:
-                sample_x.append(m.iloc[j]['place_longitude']*10000 )
-                sample_y.append(m.iloc[j]['place_latitude']*10000  )
+        for j in range(len(num)):
+                sample_x.append(input[2][j][0]*10000)
+                sample_y.append(input[2][j][1]*10000 )
 
         #1자
         sample_dist = []
@@ -680,7 +655,8 @@ def TSPRoute(place_id , value ,cycle,work):
         return {'li_in_li': sample_dist_2 ,
                 'one' : sample_dist
                 }
-    data1 = data(df2,num1)['li_in_li'][0:p]
+    
+    data11 = data(input)['li_in_li'][0:p]
     """
     TSP 
     """
@@ -762,7 +738,39 @@ def TSPRoute(place_id , value ,cycle,work):
         
         return node
     # -> 데이터
-    d = rout(data1)
+
+    d = rout(data11)[0:-1]
+
+    d_id = []
+    
+    for i in d:
+        d_id.append(num1[i])
+
+
+    return d_id
+
+
+
+rout = TSPRoute(ppp)
+rout
+
+
+
+#place_id
+num3 = [0,3,1,5,7,9]
+
+#--> api 호출
+#       도 자 버 지 차
+val2 = [ 
+        13,7,12,10,9,
+        20,11,17,13,10,
+        15,8,10,13,10,
+        24,14,12,14,12,
+        21,12,15,20,12 ,
+        31,16,18,14,10
+            ]
+
+
 
     """
     이동수단 선택 알고리즘
