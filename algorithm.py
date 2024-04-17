@@ -396,31 +396,46 @@ PossiblePlace(ppp)
 
 
 
-
 def GetPlace(input):
     day_points = input[1]
     point = input[2]
     id  = input[3]
+
+    id1 = id.copy()
 
     distance_list = []
 
     for i in range(len(point)):
         distance = abs((day_points[0][0]*10000 - point[i][0]*10000)  + abs( day_points[0][1]*10000 - point[i][1]*10000))
         distance_list.append(distance)
-        
+    '''   
     min_index =distance_list.index(min(distance_list))
 
     id_min =  id[min_index]
 
-    return id_min
+    '''
+    id_list = []
+
+    for i in range(len(id)):
+        min_index =distance_list.index(min(distance_list))
+        id_min =  id1[min_index]
+        dis_min = distance_list[min_index]
+        id_list.append(id_min)
+        distance_list.remove(dis_min)
+        id1.remove(id_min)
+
+    
+
+    return id_list
 
 
-GetPlace(ppp)   
+GetPlace(ppp)     
 
 def TwoGetPlace(input):
     day_points = input[1]
     point = input[2]
     id  = input[3]
+    id1 = id.copy()
 
     distance_list1 = []
     distance_list2 = []
@@ -432,12 +447,25 @@ def TwoGetPlace(input):
         distance_list1.append(distance1)
         distance_list2.append(distance2)
         distance_list_All.append(distance1+distance2)
-        
+    '''
     min_index =distance_list_All.index(min(distance_list_All))
 
     id_min =  id[min_index]
 
-    return id_min
+    '''
+    id_list = []
+
+    for i in range(len(id)):
+        min_index =distance_list_All.index(min(distance_list_All))
+        id_min =  id1[min_index]
+        dis_min = distance_list_All[min_index]
+        id_list.append(id_min)
+        distance_list_All.remove(dis_min)
+        id1.remove(id_min)
+
+    
+
+    return id_list
 
 
 TwoGetPlace(ppp)   
