@@ -16,32 +16,39 @@ import json
 
 
 # place id
-num2 = [0,24,35,48,150,220,120,640,221,525,555,93,110,130]
 
-def cluster(cluster_count,plc_list):
+# place id
+pppp = {
+    1:[i for i in range(123,137)] ,
+    2:[i for i in range(34,48)] ,
+    3:[1, 25, 36, 49, 151, 221, 121, 641, 222, 526, 556, 94, 111, 131]
+}
+
+
+def cluster(cluster_count,input):
     #변경
-    df2 = pd.read_csv('seoul_result_db3.csv')
+    df2 = pd.DataFrame()
 
-    num1 = plc_list
+    df2['place_id'] = input[3]
+    df2['place_longitude'] = input[2]
+    df2['place_latitude'] = input[1]
+
+
+    num1 = input[3]
     d = cluster_count
-    def data(m, n):
+    def data(input):
+        
 
         sample_x = []
         sample_y = []
 
-        num = n
+        num = input[3]
 
-        '''
-        for  i in l:
-            a = Place.objects.get(pk=i).filter(place_latitude)
-            b = Place.objects.get(pk=i).filter(place_longtitude)
-            sample_x.append(a)
-            sample_y.append(b)
-        '''
+
         
-        for j in num:
-                sample_x.append(m.iloc[j]['place_longitude'])
-                sample_y.append(m.iloc[j]['place_latitude'] )
+        for j in range(len(num)):
+                sample_x.append(input[2][j]*10000)
+                sample_y.append(input[2][j]*10000 )
 
         #1자
         sample_dist = []
@@ -74,9 +81,9 @@ def cluster(cluster_count,plc_list):
                 }
     
 
-    data1 = data(df2,num1)['li_in_li']
+    data1 = data(input)['li_in_li']
 
-    data3 = df2[['place_id','place_longitude', 'place_latitude']].iloc[num1]
+    data3 = df2[['place_id','place_longitude', 'place_latitude']]
 
     '''
     K-means
@@ -94,7 +101,6 @@ def cluster(cluster_count,plc_list):
             # 정규화 진행
             scaler = MinMaxScaler()
             data_scale = scaler.fit_transform(data)
-
 
             # 그룹 수, random_state 설정
             model = KMeans(n_clusters = k, random_state = 10)
@@ -135,7 +141,8 @@ def cluster(cluster_count,plc_list):
     return cl
     
 
-cluster(8,num2)
+cluster(8,pppp)
+
 
 
 #place_id
