@@ -389,13 +389,12 @@ def PossiblePlace(input):
     elif len(day_points) != 1:
         result = in_out(day_points,point,id)[0]
 
-    while len(result) < 8 :
+    if len(result) < 8 :
         result1 = num1_in_out(day_points,point,id)
         result = result + result1
         result = set(tuple(result))
         result = list(result)
-        if len(result1) == 0:
-            break
+        
 
     return result
 
