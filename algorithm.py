@@ -16,13 +16,41 @@ import json
 
 
 # place id
+num2 = [929 , 932   ,   869 , 867    ,    899,897  ]
+#place_id
+def data_x_y(num):
+    m = pd.read_csv('seoul_result_db3.csv')
+    sample = []
+    id = []
+    
+    
+    for j in num:
+                sample.append((m.iloc[j]['place_longitude'] , m.iloc[j]['place_latitude'] ))
+                id.append(m.iloc[j]['place_id'])
 
+    return { '샘플' :sample , 
+            'ID' : id
+    }
+data11 = data_x_y(num2)
+#일정내 장소 위치
+#p_pts = [(127, 37)]
+p_pts = [(126.8909753, 37.478876),(126.514,37,21)]
+
+ppp = {
+    1: p_pts , 
+    2: data11['샘플'] ,
+    3: data11['ID']
+}
+
+
+df = pd.read_csv('seoul_result_db3.csv')
 # place id
 pppp = {
-    1:[i for i in range(123,137)] ,
-    2:[i for i in range(34,48)] ,
-    3:[1, 25, 36, 49, 151, 221, 121, 641, 222, 526, 556, 94, 111, 131]
+    1:df.iloc[num2]['place_latitude'].to_list() ,
+    2:df.iloc[num2]['place_longitude'].to_list() ,
+    3: num2
 }
+
 
 
 def cluster(cluster_count,input):
@@ -144,31 +172,6 @@ def cluster(cluster_count,input):
 cluster(8,pppp)
 
 
-
-#place_id
-def data_x_y(num):
-    m = pd.read_csv('seoul_result_db3.csv')
-    sample = []
-    id = []
-    
-    
-    for j in num:
-                sample.append((m.iloc[j]['place_longitude'] , m.iloc[j]['place_latitude'] ))
-                id.append(m.iloc[j]['place_id'])
-
-    return { '샘플' :sample , 
-            'ID' : id
-    }
-data11 = data_x_y(num2)
-
-#일정내 장소 위치
-#p_pts = [(127, 37),(128, 37), (9, 7), (12, 9), (9,8) ,(21, 20), (13, 33), (7, 36) ]
-p_pts = [(127, 37)]
-ppp = {
-    1: p_pts , 
-    2: data11['샘플'] , 
-    3: data11['ID']
-}
 
 
 
