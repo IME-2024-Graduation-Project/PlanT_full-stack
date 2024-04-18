@@ -903,3 +903,66 @@ val2 = [
 #        iloc 대중교통
 
 TSPRoute(num3,val2,30,30)
+
+
+
+
+
+import requests
+import json
+import pandas as pd
+
+
+    
+def get_directions(api_key, origin, destination):
+    url = "https://apis-navi.kakaomobility.com/v1/directions"
+    
+    # 파라미터 추가
+    params = {
+        "origin": origin,
+        "destination": destination
+    }
+    
+    headers = {
+        "Authorization": f"KakaoAK {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.get(url, headers=headers, params=params)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None
+    
+
+def direcrion(S_x , S_y , G_x , G_y)  :
+    if __name__ == "__main__":
+        REST_API_KEY = "5a85042810b38e43494af1c4c94b675e"
+    
+        origin_input = S_x , S_y 
+        destination_input = G_x ,G_y
+    
+        result = get_directions(REST_API_KEY, origin_input, destination_input)
+        if result:
+            print(result['routes'][0]['summary']['duration']) #(json.dumps(result, indent=4))
+            print(result)
+        else:
+            print("API 호출에 실패했습니다.")   
+        return result['routes'][0]['summary']['duration']
+
+
+
+def return_direction(input):
+    list = []
+
+    latitude = input[1]
+    longitude = input[2]
+    for i in range(len(input[1])-1):
+        dir = direcrion(longitude[i],latitude[i] ,longitude[i+1], latitude[i+1])
+        list.append(dir)
+
+    return list
+
+
+return_direction(pppp)
