@@ -12,7 +12,9 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
 import requests
 import json
-
+from functools import reduce
+import numpy as np
+import pandas as pd
 
 
 # place id
@@ -188,10 +190,6 @@ cluster(8,pppp)
 
 
 
-
-from functools import reduce
-import numpy as np
-import pandas as pd
 
 #place_id
 
@@ -797,11 +795,11 @@ val2 = [
 
 
 
-    """
-    이동수단 선택 알고리즘
-    """
+"""
+이동수단 선택 알고리즘
+"""
     #        도 자 버 지 차
-    def vec_optimizer(val1,p,c,w,eco):
+def vec_optimizer(val1,p,c,w,eco):
 
         solver = pywraplp.Solver('Divorce Problem',
         pywraplp.Solver.FIXED_VALUE)
