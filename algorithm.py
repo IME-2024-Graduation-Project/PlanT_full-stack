@@ -51,6 +51,18 @@ pppp = {
     3: num2
 }
 
+num3 = [i for i in range(len(df))]
+
+data22 = data_x_y(num3)
+
+
+
+ppppp = {
+    1: p_pts , 
+    2: data22['샘플'] ,
+    3: data22['ID']
+}
+
 
 
 def cluster(cluster_count,input):
