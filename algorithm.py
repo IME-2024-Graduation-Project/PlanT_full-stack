@@ -891,18 +891,8 @@ val2 = [
             print(f'Something went wrong... ResultStatus={status}')
 
         return result
-    #eco 0 = 최단거리 , 1 = 탄소배출량 절감.
-    a = vec_optimizer(val1,p,c,w,eco)
     
-    return {'루트' : 
-            d,
-            '상세' : 
-            a
-            }
 
-#        iloc 대중교통
-
-TSPRoute(num3,val2,30,30)
 
 
 
